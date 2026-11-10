@@ -23,7 +23,8 @@ import {
   Eye,
   CheckSquare,
   AlertCircle,
-  Hash
+  Hash,
+  Trash2
 } from 'lucide-react';
 
 interface EmployeeManagementViewProps {
@@ -229,12 +230,67 @@ export const EmployeeManagementView: React.FC<EmployeeManagementViewProps> = ({
     }
   };
 
+  // Purge Defaults Modal
+  const [showPurgeModal, setShowPurgeModal] = useState(false);
+  const [submittingPurge, setSubmittingPurge] = useState(false);
+
+  // Single Delete Target (Default or Archived Employee)
+  const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
+
+  const handlePurgeDefaults = async () => {
+    try {
+      setSubmittingPurge(true);
+      const res = await api.purgeDefaultEmployees();
+      setFeedback({
+        type: 'success',
+        message: res.message || 'پرسنل پیش‌فرض با موفقیت پاک‌سازی شدند.'
+      });
+      setShowPurgeModal(false);
+      fetchEmployees();
+      if (onRefreshAll) onRefreshAll();
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err.message || 'خطا در پاک‌سازی پرسنل پیش‌فرض' });
+    } finally {
+      setSubmittingPurge(false);
+    }
+  };
+
+  const handleDeleteEmployee = async () => {
+    if (!deleteTarget) return;
+    try {
+      setSubmittingDelete(true);
+      const res = await api.deleteEmployee(deleteTarget.id);
+      setFeedback({
+        type: 'success',
+        message: res.message || `پرسنل ${deleteTarget.fullName} با موفقیت حذف گردید.`
+      });
+      setDeleteTarget(null);
+      fetchEmployees();
+      if (onRefreshAll) onRefreshAll();
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err.message || 'خطا در حذف پرسنل' });
+    } finally {
+      setSubmittingDelete(false);
+    }
+  };
+
   const isSuperAdmin = currentUser.role === 'super_admin';
 
   // Stats
   const activeCount = employees.filter((e) => e.status === 'active').length;
   const inactiveCount = employees.filter((e) => e.status === 'inactive').length;
   const archivedCount = employees.filter((e) => e.status === 'archived').length;
+
+  // Count defaults currently present
+  const defaultAccountsCount = employees.filter(
+    (e) =>
+      (e.isDefault ||
+        ['usr_mgr_biochem', 'usr_mgr_hematol', 'usr_emp_ali', 'usr_emp_maryam', 'usr_emp_nima', 'usr_emp_zahra'].includes(
+          e.id
+        )) &&
+      e.role !== 'super_admin'
+  ).length;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
@@ -252,13 +308,27 @@ export const EmployeeManagementView: React.FC<EmployeeManagementViewProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#102D3A] text-white hover:bg-[#1A4456] transition-colors text-xs font-bold shadow cursor-pointer"
-        >
-          <UserPlus className="w-4 h-4 text-[#D9C28D]" />
-          <span>افزودن پرسنل جدید</span>
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Purge defaults button for Super Admin */}
+          {isSuperAdmin && defaultAccountsCount > 0 && (
+            <button
+              onClick={() => setShowPurgeModal(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-800 transition-colors text-xs font-bold cursor-pointer"
+              title="حذف کلیه پرسنل آزمایشی و پیش‌فرض جهت ورود داده‌های واقعی"
+            >
+              <Trash2 className="w-4 h-4 text-rose-600" />
+              <span>پاک‌سازی پرسنل پیش‌فرض ({toPersianDigits(defaultAccountsCount)})</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#102D3A] text-white hover:bg-[#1A4456] transition-colors text-xs font-bold shadow cursor-pointer"
+          >
+            <UserPlus className="w-4 h-4 text-[#D9C28D]" />
+            <span>افزودن پرسنل جدید</span>
+          </button>
+        </div>
       </div>
 
       {feedback && (
@@ -599,6 +669,17 @@ export const EmployeeManagementView: React.FC<EmployeeManagementViewProps> = ({
                               className="p-1.5 hover:bg-rose-50 text-rose-600 rounded-lg transition-colors cursor-pointer"
                             >
                               <Archive className="w-4 h-4" />
+                            </button>
+                          )}
+
+                          {/* Permanent Delete for Default Demo Accounts or Archived Records */}
+                          {isSuperAdmin && !isTargetSuperAdmin && (emp.isDefault || isArchived) && (
+                            <button
+                              title={emp.isDefault ? 'پاک‌سازی پرسنل پیش‌فرض' : 'حذف پرسنل بایگانی‌شده'}
+                              onClick={() => setDeleteTarget(emp)}
+                              className="p-1.5 hover:bg-red-50 text-red-600 rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           )}
                         </div>
@@ -1017,6 +1098,119 @@ export const EmployeeManagementView: React.FC<EmployeeManagementViewProps> = ({
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 5: Purge All Default Employees Modal */}
+      {showPurgeModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2 text-base font-bold text-rose-700">
+                <Trash2 className="w-5 h-5" />
+                <span>پاک‌سازی کامل پرسنل پیش‌فرض و آزمایشی</span>
+              </div>
+              <button
+                onClick={() => setShowPurgeModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs text-slate-600">
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-900 leading-relaxed">
+                <p className="font-bold mb-1">هشدار پاک‌سازی داده‌های دمو:</p>
+                <p>
+                  این عملیات تمامی پرسنل پیش‌فرض نمونه (به استثنای مدیر ارشد) و داده‌های آزمایشی متناظر با آن‌ها را به صورت کامل و دائم حذف می‌کند.
+                </p>
+              </div>
+              <p>
+                پس از پاک‌سازی، لیست پرسنل شما کاملاً آماده ورود اطلاعات واقعی سازمان و کارکنان خواهد بود و دکمه‌های «غیرفعال‌سازی» و «بایگانی» تنها روی پرسنل ثبت‌شده توسط شما اعمال می‌گردد.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setShowPurgeModal(false)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
+              >
+                انصراف
+              </button>
+              <button
+                type="button"
+                onClick={handlePurgeDefaults}
+                disabled={submittingPurge}
+                className="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+              >
+                {submittingPurge ? (
+                  <span>در حال پاک‌سازی...</span>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    <span>تایید و پاک‌سازی پرسنل پیش‌فرض</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 6: Delete Single Employee Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2 text-base font-bold text-rose-700">
+                <Trash2 className="w-5 h-5" />
+                <span>حذف قطعی پرسنل</span>
+              </div>
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs text-slate-600">
+              <p>
+                آیا از حذف دائم پرسنل <strong className="text-slate-900 font-bold">{deleteTarget.fullName}</strong> با کد پرسنلی <strong className="font-mono text-[#102D3A]">{deleteTarget.employeeCode}</strong> اطمینان دارید؟
+              </p>
+              {deleteTarget.isDefault && (
+                <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-[11px]">
+                  این پرسنل از حساب‌های پیش‌فرض اولیه سیستم است و حذف آن هیچ‌گونه آسیبی به اطلاعات اصلی یا عملکرد سامانه وارد نخواهد کرد.
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
+              >
+                انصراف
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteEmployee}
+                disabled={submittingDelete}
+                className="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+              >
+                {submittingDelete ? (
+                  <span>در حال حذف...</span>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    <span>حذف قطعی پرسنل</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -836,6 +836,126 @@ app.put('/api/employees/:id/archive', authMiddleware, requireRole('super_admin')
   res.json({ success: true, user: sanitized });
 });
 
+// Purge all default seeded demo employees (except active Super Admin)
+app.post('/api/employees/defaults/purge', authMiddleware, requireRole('super_admin'), (req: AuthRequest, res) => {
+  const defaultUserIds = [
+    'usr_mgr_biochem',
+    'usr_mgr_hematol',
+    'usr_emp_ali',
+    'usr_emp_maryam',
+    'usr_emp_nima',
+    'usr_emp_zahra'
+  ];
+
+  // Identify default users currently in DB
+  const toDelete = db.users.filter(
+    (u) => (defaultUserIds.includes(u.id) || u.isDefault === true) && u.role !== 'super_admin'
+  );
+
+  const deletedIds = toDelete.map((u) => u.id);
+  const deletedNames = toDelete.map((u) => `${u.fullName} (${u.employeeCode})`).join('، ');
+
+  if (deletedIds.length === 0) {
+    return res.json({
+      success: true,
+      count: 0,
+      message: 'هیچ پرسنل پیش‌فرضی جهت پاک‌سازی یافت نشد.'
+    });
+  }
+
+  // Remove users & profiles
+  db.users = db.users.filter((u) => !deletedIds.includes(u.id));
+  db.profiles = db.profiles.filter((p) => !deletedIds.includes(p.employeeId));
+
+  // Invalidate any active sessions
+  if (db.activeSessions) {
+    db.activeSessions = db.activeSessions.filter((s) => !deletedIds.includes(s.userId));
+  }
+
+  // Remove demo attendance sessions, events, tasks and requests for these purged default users
+  db.attendanceSessions = db.attendanceSessions.filter((s) => !deletedIds.includes(s.employeeId));
+  db.attendanceEvents = db.attendanceEvents.filter((e) => !deletedIds.includes(e.employeeId));
+  db.tasks = db.tasks.filter((t) => !deletedIds.includes(t.assigneeId));
+  db.leaveRequests = db.leaveRequests.filter((l) => !deletedIds.includes(l.employeeId));
+  db.missionRequests = db.missionRequests.filter((m) => !deletedIds.includes(m.employeeId));
+  db.gpsExceptionRequests = db.gpsExceptionRequests.filter((g) => !deletedIds.includes(g.employeeId));
+  db.schedules = db.schedules.filter((s) => !deletedIds.includes(s.employeeId));
+  db.gpsPolicies = db.gpsPolicies.filter((p) => !deletedIds.includes(p.employeeId));
+
+  logAudit(
+    req.user!,
+    'پاک‌سازی پرسنل پیش‌فرض و آزمایشی',
+    'employee_mgmt',
+    `تعداد ${deletedIds.length} پرسنل پیش‌فرض (${deletedNames}) با موفقیت پاک‌سازی شدند. اکنون مدیریت پرسنل فقط شامل پرسنل واقعی سازمان است.`,
+    undefined,
+    req
+  );
+
+  saveDatabase(db);
+
+  res.json({
+    success: true,
+    count: deletedIds.length,
+    message: `تعداد ${deletedIds.length} پرسنل پیش‌فرض با موفقیت پاک‌سازی شدند.`,
+    deletedIds
+  });
+});
+
+// Delete a specific default employee or unarchived employee
+app.delete('/api/employees/:id', authMiddleware, requireRole('super_admin'), (req: AuthRequest, res) => {
+  const { id } = req.params;
+  const user = db.users.find((u) => u.id === id);
+  if (!user) {
+    return res.status(404).json({ error: 'پرسنل مورد نظر یافت نشد.' });
+  }
+
+  if (user.role === 'super_admin') {
+    return res.status(403).json({ error: 'حساب مدیر ارشد قابل حذف نیست.' });
+  }
+
+  // Only allowed if user is marked as default/demo OR archived
+  const isDefault =
+    user.isDefault ||
+    ['usr_mgr_biochem', 'usr_mgr_hematol', 'usr_emp_ali', 'usr_emp_maryam', 'usr_emp_nima', 'usr_emp_zahra'].includes(
+      user.id
+    );
+
+  if (!isDefault && user.status !== 'archived') {
+    return res.status(400).json({
+      error: 'پرسنل واقعی ابتدا باید بایگانی شوند یا از عملیات بایگانی استفاده نمایید.'
+    });
+  }
+
+  // Remove user & profile
+  db.users = db.users.filter((u) => u.id !== id);
+  db.profiles = db.profiles.filter((p) => p.employeeId !== id);
+  if (db.activeSessions) {
+    db.activeSessions = db.activeSessions.filter((s) => s.userId !== id);
+  }
+
+  // Clean linked demo records if default
+  if (isDefault) {
+    db.attendanceSessions = db.attendanceSessions.filter((s) => s.employeeId !== id);
+    db.attendanceEvents = db.attendanceEvents.filter((e) => e.employeeId !== id);
+    db.tasks = db.tasks.filter((t) => t.assigneeId !== id);
+    db.leaveRequests = db.leaveRequests.filter((l) => l.employeeId !== id);
+    db.schedules = db.schedules.filter((s) => s.employeeId !== id);
+    db.gpsPolicies = db.gpsPolicies.filter((p) => p.employeeId !== id);
+  }
+
+  logAudit(
+    req.user!,
+    'حذف پرسنل پیش‌فرض/بایگانی',
+    'employee_mgmt',
+    `پرسنل ${user.fullName} (${user.employeeCode}) با موفقیت حذف گردید.`,
+    user.id,
+    req
+  );
+
+  saveDatabase(db);
+  res.json({ success: true, message: `پرسنل ${user.fullName} حذف گردید.` });
+});
+
 // Legacy users list for backward compatibility
 app.get('/api/users', authMiddleware, (req: AuthRequest, res) => {
   const currentUser = req.user!;

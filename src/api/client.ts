@@ -136,6 +136,15 @@ export const api = {
       method: 'PUT',
       body: JSON.stringify({ reason })
     }),
+  purgeDefaultEmployees: () =>
+    apiFetch<{ success: boolean; count: number; message: string; deletedIds: string[] }>(
+      '/api/employees/defaults/purge',
+      { method: 'POST' }
+    ),
+  deleteEmployee: (id: string) =>
+    apiFetch<{ success: boolean; message: string }>(`/api/employees/${id}`, {
+      method: 'DELETE'
+    }),
 
   // Legacy Users list
   getUsers: () => apiFetch<User[]>('/api/users'),

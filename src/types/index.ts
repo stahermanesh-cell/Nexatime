@@ -13,6 +13,7 @@ export interface User {
   department: string;
   avatarUrl?: string;
   active: boolean; // true if status === 'active'
+  isDefault?: boolean; // true for seeded default demo employees
   designatedManagerId?: string;
   fallbackManagerId?: string;
   createdAt: string;

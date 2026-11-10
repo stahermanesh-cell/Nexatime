@@ -104,6 +104,7 @@ export function getInitialSeedData(): DatabaseSchema {
       mobile: '09121112233',
       department: 'مدیریت ارشد پاتوبیولوژی',
       active: true,
+      isDefault: true,
       passwordHash: defaultPasswordHash,
       createdAt: nowIso
     },
@@ -118,6 +119,7 @@ export function getInitialSeedData(): DatabaseSchema {
       mobile: '09122223344',
       department: 'بخش بیوشیمی و هورمون',
       active: true,
+      isDefault: true,
       designatedManagerId: 'usr_superadmin',
       passwordHash: defaultPasswordHash,
       createdAt: nowIso
@@ -133,6 +135,7 @@ export function getInitialSeedData(): DatabaseSchema {
       mobile: '09123334455',
       department: 'بخش هماتولوژی و بانک خون',
       active: true,
+      isDefault: true,
       designatedManagerId: 'usr_superadmin',
       passwordHash: defaultPasswordHash,
       createdAt: nowIso
@@ -148,6 +151,7 @@ export function getInitialSeedData(): DatabaseSchema {
       mobile: '09124445566',
       department: 'پذیرش و نمونه‌گیری',
       active: true,
+      isDefault: true,
       designatedManagerId: 'usr_mgr_biochem',
       fallbackManagerId: 'usr_superadmin',
       passwordHash: defaultPasswordHash,
@@ -164,6 +168,7 @@ export function getInitialSeedData(): DatabaseSchema {
       mobile: '09125556677',
       department: 'بخش هماتولوژی',
       active: true,
+      isDefault: true,
       designatedManagerId: 'usr_mgr_hematol',
       fallbackManagerId: 'usr_superadmin',
       passwordHash: defaultPasswordHash,
@@ -180,6 +185,7 @@ export function getInitialSeedData(): DatabaseSchema {
       mobile: '09126667788',
       department: 'کنترل کیفی و کالیبراسیون',
       active: true,
+      isDefault: true,
       designatedManagerId: 'usr_mgr_biochem',
       fallbackManagerId: 'usr_superadmin',
       passwordHash: defaultPasswordHash,
@@ -196,6 +202,7 @@ export function getInitialSeedData(): DatabaseSchema {
       mobile: '09127778899',
       department: 'بخش بیوشیمی',
       active: true,
+      isDefault: true,
       designatedManagerId: 'usr_mgr_biochem',
       fallbackManagerId: 'usr_superadmin',
       passwordHash: defaultPasswordHash,
@@ -818,6 +825,22 @@ export function runDatabaseMigrations(rawDb: any): DatabaseSchema {
         user.status = user.active !== false ? 'active' : 'inactive';
       }
       user.active = user.status === 'active';
+
+      // Ensure isDefault flag on seeded demo accounts
+      if (user.isDefault === undefined) {
+        const defaultIds = [
+          'usr_superadmin',
+          'usr_mgr_biochem',
+          'usr_mgr_hematol',
+          'usr_emp_ali',
+          'usr_emp_maryam',
+          'usr_emp_nima',
+          'usr_emp_zahra'
+        ];
+        if (defaultIds.includes(user.id)) {
+          user.isDefault = true;
+        }
+      }
 
       // Ensure password hash
       if (!user.passwordHash) {
