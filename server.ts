@@ -3048,12 +3048,30 @@ async function startServer() {
       }
     });
   } else {
-    const distPath = path.resolve(__dirname, 'dist');
-    if (fs.existsSync(distPath)) {
+    // In production, when running bundled server.js inside dist/,
+    // the built Vite files (index.html, assets/) are right next to server.js (__dirname).
+    // If running server.ts directly, they are located in path.resolve(__dirname, 'dist').
+    const candidatePaths = [
+      __dirname, // beside server.js (e.g. dist/)
+      path.resolve(__dirname, 'dist'), // if started from project root
+      path.resolve(process.cwd(), 'dist') // working directory fallback
+    ];
+
+    const distPath = candidatePaths.find(
+      (dir) => fs.existsSync(dir) && fs.existsSync(path.join(dir, 'index.html'))
+    );
+
+    if (distPath) {
+      console.log(`Serving static production files from: ${distPath}`);
       app.use(express.static(distPath));
-      app.get('*', (req, res) => {
+      app.get('*', (req, res, next) => {
+        if (req.originalUrl.startsWith('/api') || req.originalUrl.startsWith('/healthz')) {
+          return next();
+        }
         res.sendFile(path.join(distPath, 'index.html'));
       });
+    } else {
+      console.warn('Production client build directory with index.html not found.');
     }
   }
 
