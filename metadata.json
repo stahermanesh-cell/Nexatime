@@ -1,0 +1,6 @@
+{
+  "name": "سامانه حضور و غیاب آزمایشگاه ترنج",
+  "description": "سامانه یکپارچه مدیریت حضور و غیاب، شیفت‌بندی پرسنل، اعتبارسنجی موقعیت مکانی GPS و کارتابل وظایف آزمایشگاه پاتوبیولوژی ترنج",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

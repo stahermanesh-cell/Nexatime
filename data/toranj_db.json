@@ -1,0 +1,753 @@
+{
+  "users": [
+    {
+      "id": "usr_superadmin",
+      "username": "dr_hosseini",
+      "fullName": "دکتر رضا حسینی",
+      "role": "super_admin",
+      "email": "hosseini@toranjlab.ir",
+      "mobile": "09121112233",
+      "department": "مدیریت ارشد پاتوبیولوژی",
+      "active": true,
+      "createdAt": "2026-11-06T20:50:59.992Z",
+      "status": "active",
+      "passwordHash": "$2b$08$zF7qtCm9gLP3SZDqxojwSeagvhtgeimuwkrIyyKKH0E5zNk3r2fXC",
+      "employeeCode": "EMP-000001",
+      "lastLoginAt": "2026-11-09T22:27:01.597Z"
+    },
+    {
+      "id": "usr_mgr_biochem",
+      "username": "s_rahimi",
+      "fullName": "سارا رحیمی",
+      "role": "manager",
+      "email": "rahimi@toranjlab.ir",
+      "mobile": "09122223344",
+      "department": "بخش بیوشیمی و هورمون",
+      "active": true,
+      "designatedManagerId": "usr_superadmin",
+      "createdAt": "2026-11-06T20:50:59.992Z",
+      "status": "active",
+      "passwordHash": "$2b$08$zF7qtCm9gLP3SZDqxojwSeagvhtgeimuwkrIyyKKH0E5zNk3r2fXC",
+      "employeeCode": "EMP-000002"
+    },
+    {
+      "id": "usr_mgr_hematol",
+      "username": "m_kazemi",
+      "fullName": "محمد کاظمی",
+      "role": "manager",
+      "email": "kazemi@toranjlab.ir",
+      "mobile": "09123334455",
+      "department": "بخش هماتولوژی و بانک خون",
+      "active": true,
+      "designatedManagerId": "usr_superadmin",
+      "createdAt": "2026-11-06T20:50:59.992Z",
+      "status": "active",
+      "passwordHash": "$2b$08$zF7qtCm9gLP3SZDqxojwSeagvhtgeimuwkrIyyKKH0E5zNk3r2fXC",
+      "employeeCode": "EMP-000003"
+    },
+    {
+      "id": "usr_emp_ali",
+      "username": "a_taheri",
+      "fullName": "علی طاهری",
+      "role": "employee",
+      "email": "taheri@toranjlab.ir",
+      "mobile": "09124445566",
+      "department": "پذیرش و نمونه‌گیری",
+      "active": true,
+      "designatedManagerId": "usr_mgr_biochem",
+      "fallbackManagerId": "usr_superadmin",
+      "createdAt": "2026-11-06T20:50:59.992Z",
+      "status": "active",
+      "passwordHash": "$2b$08$zF7qtCm9gLP3SZDqxojwSeagvhtgeimuwkrIyyKKH0E5zNk3r2fXC",
+      "employeeCode": "EMP-000004"
+    },
+    {
+      "id": "usr_emp_maryam",
+      "username": "m_alavi",
+      "fullName": "مریم علوی",
+      "role": "employee",
+      "email": "alavi@toranjlab.ir",
+      "mobile": "09125556677",
+      "department": "بخش هماتولوژی",
+      "active": true,
+      "designatedManagerId": "usr_mgr_hematol",
+      "fallbackManagerId": "usr_superadmin",
+      "createdAt": "2026-11-06T20:50:59.992Z",
+      "status": "active",
+      "passwordHash": "$2b$08$zF7qtCm9gLP3SZDqxojwSeagvhtgeimuwkrIyyKKH0E5zNk3r2fXC",
+      "employeeCode": "EMP-000005"
+    },
+    {
+      "id": "usr_emp_nima",
+      "username": "n_sadeghi",
+      "fullName": "نیما صادقی",
+      "role": "employee",
+      "email": "sadeghi@toranjlab.ir",
+      "mobile": "09126667788",
+      "department": "کنترل کیفی و کالیبراسیون",
+      "active": true,
+      "designatedManagerId": "usr_mgr_biochem",
+      "fallbackManagerId": "usr_superadmin",
+      "createdAt": "2026-11-06T20:50:59.992Z",
+      "status": "active",
+      "passwordHash": "$2b$08$zF7qtCm9gLP3SZDqxojwSeagvhtgeimuwkrIyyKKH0E5zNk3r2fXC",
+      "employeeCode": "EMP-000006"
+    },
+    {
+      "id": "usr_emp_zahra",
+      "username": "z_moradi",
+      "fullName": "زهرا مرادی",
+      "role": "employee",
+      "email": "moradi@toranjlab.ir",
+      "mobile": "09127778899",
+      "department": "بخش بیوشیمی",
+      "active": true,
+      "designatedManagerId": "usr_mgr_biochem",
+      "fallbackManagerId": "usr_superadmin",
+      "createdAt": "2026-11-06T20:50:59.992Z",
+      "status": "active",
+      "passwordHash": "$2b$08$zF7qtCm9gLP3SZDqxojwSeagvhtgeimuwkrIyyKKH0E5zNk3r2fXC",
+      "employeeCode": "EMP-000007"
+    }
+  ],
+  "profiles": [
+    {
+      "employeeId": "usr_superadmin",
+      "nationalId": "0012345678",
+      "birthDate": "1975-04-12",
+      "landline": "02188776655",
+      "emergencyContactName": "مهناز حسینی",
+      "emergencyContactRelation": "همسر",
+      "emergencyContactPhone": "09121110011",
+      "bankAccount": "6037-9911-2233-4455",
+      "iban": "IR820170000000111222333444",
+      "hireDate": "2015-01-01",
+      "status": "active",
+      "notes": "پزشک پاتولوژیست و موسس آزمایشگاه",
+      "shiftMode": "morning",
+      "weeklyOffDays": [
+        6
+      ]
+    },
+    {
+      "employeeId": "usr_mgr_biochem",
+      "nationalId": "0023456789",
+      "birthDate": "1988-08-20",
+      "landline": "02188776656",
+      "emergencyContactName": "حسین رحیمی",
+      "emergencyContactRelation": "پدر",
+      "emergencyContactPhone": "09122220022",
+      "bankAccount": "5022-2910-3344-5566",
+      "iban": "IR450120000000222333444555",
+      "hireDate": "2019-05-15",
+      "status": "active",
+      "notes": "کارشناس ارشد بیوشیمی بالینی",
+      "shiftMode": "morning",
+      "weeklyOffDays": [
+        6
+      ]
+    },
+    {
+      "employeeId": "usr_mgr_hematol",
+      "nationalId": "0034567890",
+      "birthDate": "1985-11-05",
+      "landline": "02188776657",
+      "emergencyContactName": "فاطمه کاظمی",
+      "emergencyContactRelation": "همسر",
+      "emergencyContactPhone": "09123330033",
+      "bankAccount": "6219-8610-4455-6677",
+      "iban": "IR120560000000333444555666",
+      "hireDate": "2018-09-01",
+      "status": "active",
+      "shiftMode": "morning",
+      "weeklyOffDays": [
+        6
+      ]
+    },
+    {
+      "employeeId": "usr_emp_ali",
+      "nationalId": "0045678901",
+      "birthDate": "1996-11-09",
+      "landline": "02188776658",
+      "emergencyContactName": "رضا طاهری",
+      "emergencyContactRelation": "برادر",
+      "emergencyContactPhone": "09124440044",
+      "bankAccount": "5892-1012-5566-7788",
+      "iban": "IR780180000000444555666777",
+      "hireDate": "2022-03-10",
+      "status": "active",
+      "shiftMode": "both",
+      "weeklyOffDays": [
+        6
+      ]
+    },
+    {
+      "employeeId": "usr_emp_maryam",
+      "nationalId": "0056789012",
+      "birthDate": "1994-11-09",
+      "landline": "02188776659",
+      "emergencyContactName": "مریم علوی",
+      "emergencyContactRelation": "مادر",
+      "emergencyContactPhone": "09125550055",
+      "bankAccount": "6274-1211-6677-8899",
+      "iban": "IR910190000000555666777888",
+      "hireDate": "2021-07-20",
+      "status": "active",
+      "shiftMode": "morning",
+      "weeklyOffDays": [
+        6
+      ]
+    },
+    {
+      "employeeId": "usr_emp_nima",
+      "nationalId": "0067890123",
+      "birthDate": "1997-11-12",
+      "landline": "02188776660",
+      "emergencyContactName": "سعید صادقی",
+      "emergencyContactRelation": "پدر",
+      "emergencyContactPhone": "09126660066",
+      "bankAccount": "6393-4610-7788-9900",
+      "iban": "IR340210000000666777888999",
+      "hireDate": "2023-01-15",
+      "status": "active",
+      "shiftMode": "rotating",
+      "weeklyOffDays": [
+        6
+      ]
+    },
+    {
+      "employeeId": "usr_emp_zahra",
+      "nationalId": "0078901234",
+      "birthDate": "1998-12-05",
+      "landline": "02188776661",
+      "emergencyContactName": "احمد مرادی",
+      "emergencyContactRelation": "پدر",
+      "emergencyContactPhone": "09127770077",
+      "bankAccount": "6104-3378-8899-0011",
+      "iban": "IR560230000000777888999000",
+      "hireDate": "2023-08-01",
+      "status": "active",
+      "shiftMode": "morning",
+      "weeklyOffDays": [
+        6
+      ]
+    }
+  ],
+  "shiftTemplates": [
+    {
+      "id": "shift_morning",
+      "name": "شیفت صبح (۰۸:۰۰ الی ۱۴:۰۰)",
+      "code": "MORN",
+      "startTime": "08:00",
+      "endTime": "14:00",
+      "scheduledDurationMinutes": 360,
+      "breakDurationMinutes": 30,
+      "isPaidBreak": true,
+      "allowedLatenessMinutes": 15,
+      "earlyDepartureGraceMinutes": 10,
+      "overtimeEligibility": true,
+      "crossMidnight": false,
+      "color": "#0D9488",
+      "description": "شیفت اصلی پذیرش و آنالیزهای صبحگاهی"
+    },
+    {
+      "id": "shift_evening",
+      "name": "شیفت عصر (۱۴:۰۰ الی ۲۰:۰۰)",
+      "code": "EVEN",
+      "startTime": "14:00",
+      "endTime": "20:00",
+      "scheduledDurationMinutes": 360,
+      "breakDurationMinutes": 30,
+      "isPaidBreak": true,
+      "allowedLatenessMinutes": 15,
+      "earlyDepartureGraceMinutes": 10,
+      "overtimeEligibility": true,
+      "crossMidnight": false,
+      "color": "#D97706",
+      "description": "شیفت تحویل جوابدهی و کنترل‌های شبانه"
+    }
+  ],
+  "schedules": [
+    {
+      "id": "sch_1",
+      "employeeId": "usr_emp_ali",
+      "dateString": "2026-11-07",
+      "shiftTemplateId": "shift_morning"
+    },
+    {
+      "id": "sch_2",
+      "employeeId": "usr_emp_maryam",
+      "dateString": "2026-11-07",
+      "shiftTemplateId": "shift_morning"
+    },
+    {
+      "id": "sch_3",
+      "employeeId": "usr_emp_nima",
+      "dateString": "2026-11-07",
+      "shiftTemplateId": "shift_evening"
+    },
+    {
+      "id": "sch_4",
+      "employeeId": "usr_emp_zahra",
+      "dateString": "2026-11-07",
+      "shiftTemplateId": "shift_evening"
+    },
+    {
+      "id": "sch_5",
+      "employeeId": "usr_mgr_biochem",
+      "dateString": "2026-11-07",
+      "shiftTemplateId": "shift_morning"
+    },
+    {
+      "id": "sch_6",
+      "employeeId": "usr_mgr_hematol",
+      "dateString": "2026-11-07",
+      "shiftTemplateId": "shift_evening"
+    }
+  ],
+  "gpsPolicies": [
+    {
+      "id": "gps_default",
+      "employeeId": "default",
+      "required": true,
+      "targetLat": 35.7592,
+      "targetLng": 51.4116,
+      "allowedRadiusMeters": 100,
+      "allowExceptionRequest": true,
+      "poorAccuracyThresholdMeters": 80,
+      "policyVersion": 1,
+      "effectiveDate": "2026-01-01",
+      "exceptionManagerId": "usr_superadmin"
+    },
+    {
+      "id": "gps_nima",
+      "employeeId": "usr_emp_nima",
+      "required": false,
+      "targetLat": 35.7592,
+      "targetLng": 51.4116,
+      "allowedRadiusMeters": 500,
+      "allowExceptionRequest": true,
+      "poorAccuracyThresholdMeters": 100,
+      "policyVersion": 1,
+      "effectiveDate": "2026-01-01",
+      "exceptionManagerId": "usr_mgr_biochem"
+    }
+  ],
+  "attendanceEvents": [
+    {
+      "id": "att_evt_1793999801399",
+      "employeeId": "usr_emp_ali",
+      "eventType": "check_in",
+      "serverTimestamp": "2026-11-06T21:16:41.399Z",
+      "locationResult": "verified",
+      "coords": {
+        "latitude": 35.75921,
+        "longitude": 51.41159,
+        "accuracy": 12
+      },
+      "distanceMeters": 1,
+      "policyVersion": 1,
+      "deviceInfo": "curl/7.88.1",
+      "eventSource": "personal_device"
+    },
+    {
+      "id": "att_evt_1793999797196",
+      "employeeId": "usr_emp_ali",
+      "eventType": "check_out",
+      "serverTimestamp": "2026-11-06T21:16:37.196Z",
+      "locationResult": "verified",
+      "coords": {
+        "latitude": 35.75921,
+        "longitude": 51.41159,
+        "accuracy": 12
+      },
+      "distanceMeters": 1,
+      "policyVersion": 1,
+      "deviceInfo": "curl/7.88.1",
+      "eventSource": "personal_device"
+    },
+    {
+      "id": "att_evt_1",
+      "employeeId": "usr_emp_ali",
+      "eventType": "check_in",
+      "serverTimestamp": "2026-11-07T07:55:00.000Z",
+      "scheduleId": "sch_1",
+      "locationResult": "verified",
+      "coords": {
+        "latitude": 35.75921,
+        "longitude": 51.41159,
+        "accuracy": 12
+      },
+      "distanceMeters": 5,
+      "policyVersion": 1,
+      "deviceInfo": "Mozilla/5.0 (iPhone; Mobile)",
+      "eventSource": "personal_device",
+      "notes": "ثبت ورود بموقع پرسنل"
+    }
+  ],
+  "attendanceSessions": [
+    {
+      "id": "att_sess_1793999801400",
+      "employeeId": "usr_emp_ali",
+      "dateString": "2026-11-07",
+      "checkInEventId": "att_evt_1793999801399",
+      "checkInTime": "2026-11-06T21:16:41.399Z",
+      "latenessMinutes": 0,
+      "earlyDepartureMinutes": 0,
+      "approvedOvertimeMinutes": 0,
+      "status": "open",
+      "shiftType": "morning"
+    },
+    {
+      "id": "att_sess_1",
+      "employeeId": "usr_emp_ali",
+      "dateString": "2026-11-07",
+      "checkInEventId": "att_evt_1",
+      "checkInTime": "2026-11-07T07:55:00.000Z",
+      "latenessMinutes": 0,
+      "earlyDepartureMinutes": 1003,
+      "approvedOvertimeMinutes": 0,
+      "status": "closed",
+      "rawDurationMinutes": 0,
+      "calculatedWorkMinutes": 150,
+      "hourlyLeaveCoveredMinutes": 150,
+      "checkOutEventId": "att_evt_1793999797196",
+      "checkOutTime": "2026-11-06T21:16:37.196Z"
+    }
+  ],
+  "correctionRequests": [],
+  "tasks": [
+    {
+      "id": "task_1",
+      "title": "کنترل دمای یخچال‌های نگهداری کیت الایزا",
+      "description": "بررسی دمای ۳ دستگاه یخچال نگهداری سرم و کیت‌های هورمونی و ثبت لاگ دمایی در فرم مربوطه.",
+      "creatorId": "usr_mgr_biochem",
+      "creatorName": "سارا رحیمی",
+      "assigneeId": "usr_emp_ali",
+      "assigneeName": "علی طاهری",
+      "mandatory": true,
+      "priority": "high",
+      "dueDate": "2026-11-07",
+      "dueTime": "11:00",
+      "status": "in_progress",
+      "designatedApproverId": "usr_mgr_biochem",
+      "history": [
+        {
+          "timestamp": "2026-11-06T20:50:59.992Z",
+          "actorId": "usr_mgr_biochem",
+          "actorName": "سارا رحیمی",
+          "action": "ایجاد وظیفه اجباری",
+          "note": "ارجاع به کارشناس شیفت"
+        }
+      ],
+      "createdAt": "2026-11-06T20:50:59.992Z"
+    },
+    {
+      "id": "task_2",
+      "title": "تحویل و شمارش لوله‌های CBC شیفت صبح",
+      "description": "آماده‌سازی گزارش پذیرش و کنترل تعداد نمونه‌های خون تام ارسال شده به بخش هماتولوژی.",
+      "creatorId": "usr_mgr_biochem",
+      "creatorName": "سارا رحیمی",
+      "assigneeId": "usr_emp_ali",
+      "assigneeName": "علی طاهری",
+      "mandatory": false,
+      "priority": "medium",
+      "dueDate": "2026-11-07",
+      "dueTime": "13:30",
+      "status": "new",
+      "designatedApproverId": "usr_mgr_biochem",
+      "history": [
+        {
+          "timestamp": "2026-11-06T20:50:59.992Z",
+          "actorId": "usr_mgr_biochem",
+          "actorName": "سارا رحیمی",
+          "action": "ایجاد وظیفه اختیاری"
+        }
+      ],
+      "createdAt": "2026-11-06T20:50:59.992Z"
+    },
+    {
+      "id": "task_3",
+      "title": "کالیبراسیون هفتگی سل‌کانتر Sysmex XN-1000",
+      "description": "انجام تست‌های کنترل تجاری نرمال، بالا و پایین و بررسی نمودار لوی-جنینگز.",
+      "creatorId": "usr_mgr_hematol",
+      "creatorName": "محمد کاظمی",
+      "assigneeId": "usr_emp_maryam",
+      "assigneeName": "مریم علوی",
+      "mandatory": true,
+      "priority": "urgent",
+      "dueDate": "2026-11-07",
+      "dueTime": "10:00",
+      "status": "completion_reported",
+      "designatedApproverId": "usr_mgr_hematol",
+      "completionReportedAt": "2026-11-06T20:50:59.992Z",
+      "completionNotes": "کنترل‌های شیفت اجرا شد و کلیه پارامترها در محدوده 2SD قرار دارند.",
+      "history": [
+        {
+          "timestamp": "2026-11-06T20:50:59.992Z",
+          "actorId": "usr_mgr_hematol",
+          "actorName": "محمد کاظمی",
+          "action": "ایجاد وظیفه اجباری"
+        },
+        {
+          "timestamp": "2026-11-06T20:50:59.992Z",
+          "actorId": "usr_emp_maryam",
+          "actorName": "مریم علوی",
+          "action": "اعلام اتمام وظیفه",
+          "note": "ارسال برای تایید سرپرست"
+        }
+      ],
+      "createdAt": "2026-11-06T20:50:59.992Z"
+    }
+  ],
+  "leaveRequests": [
+    {
+      "id": "leave_1793999784129",
+      "employeeId": "usr_emp_ali",
+      "employeeName": "علی طاهری",
+      "leaveType": "hourly",
+      "startDate": "2026-11-07",
+      "endDate": "2026-11-07",
+      "isPartialDay": true,
+      "startTime": "08:00",
+      "endTime": "10:30",
+      "durationMinutes": 150,
+      "reason": "امور درمانی و پزشکی",
+      "status": "approved",
+      "assignedApproverId": "usr_mgr_biochem",
+      "createdAt": "2026-11-06T21:16:24.129Z",
+      "reviewedBy": "usr_mgr_biochem",
+      "reviewedAt": "2026-11-06T21:16:28.104Z"
+    },
+    {
+      "id": "leave_1",
+      "employeeId": "usr_emp_zahra",
+      "employeeName": "زهرا مرادی",
+      "leaveType": "hourly",
+      "startDate": "2026-11-07",
+      "endDate": "2026-11-07",
+      "isPartialDay": true,
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "durationMinutes": 120,
+      "reason": "مراجعه به پزشک متخصص",
+      "status": "pending",
+      "assignedApproverId": "usr_mgr_biochem",
+      "createdAt": "2026-11-06T20:50:59.992Z"
+    }
+  ],
+  "missionRequests": [],
+  "gpsExceptionRequests": [],
+  "notifications": [
+    {
+      "id": "notif_1793999788104",
+      "recipientId": "usr_emp_ali",
+      "type": "leave_decision",
+      "title": "نتیجه درخواست مرخصی: موافقت شد",
+      "message": "درخواست مرخصی شما برای تاریخ 2026-11-07 مورد موافقت قرار گرفت و در تردد شما اعمال شد.",
+      "read": false,
+      "referenceId": "leave_1793999784129",
+      "referenceType": "leave",
+      "createdAt": "2026-11-06T21:16:28.104Z"
+    },
+    {
+      "id": "notif_1793999784129",
+      "recipientId": "usr_mgr_biochem",
+      "type": "approval_required",
+      "title": "درخواست مرخصی جدید",
+      "message": "علی طاهری درخواست مرخصی ساعتی (08:00 الی 10:30) برای 2026-11-07 ثبت کرد.",
+      "read": false,
+      "referenceId": "leave_1793999784129",
+      "referenceType": "leave",
+      "createdAt": "2026-11-06T21:16:24.129Z"
+    },
+    {
+      "id": "notif_1",
+      "recipientId": "usr_emp_ali",
+      "type": "task_assigned",
+      "title": "وظیفه جدید محول شد",
+      "message": "وظیفه اجباری \"کنترل دمای یخچال‌های نگهداری کیت الایزا\" برای شما ثبت شد.",
+      "read": false,
+      "referenceId": "task_1",
+      "referenceType": "task",
+      "createdAt": "2026-11-06T20:50:59.992Z"
+    },
+    {
+      "id": "notif_2",
+      "recipientId": "usr_mgr_hematol",
+      "type": "approval_required",
+      "title": "درخواست تایید اتمام وظیفه",
+      "message": "مریم علوی وظیفه \"کالیبراسیون هفتگی سل‌کانتر\" را انجام داده و منتظر تایید شماست.",
+      "read": false,
+      "referenceId": "task_3",
+      "referenceType": "task",
+      "createdAt": "2026-11-06T20:50:59.992Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "aud_1794263221598_0gow9",
+      "actorId": "usr_superadmin",
+      "actorName": "دکتر رضا حسینی",
+      "action": "ورود به سامانه",
+      "category": "auth",
+      "affectedRecordId": "usr_superadmin",
+      "details": "ورود موفق کاربر با کد پرسنلی EMP-000001 (دکتر رضا حسینی)",
+      "serverTimestamp": "2026-11-09T22:27:01.598Z",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "aud_1793999801400_bxjcp",
+      "actorId": "usr_emp_ali",
+      "actorName": "علی طاهری",
+      "action": "ثبت ورود پرسنل",
+      "category": "attendance",
+      "affectedRecordId": "att_sess_1793999801400",
+      "details": "ورود موفق در شیفت شیفت صبح (۰۸:۰۰ الی ۱۴:۰۰) (morning) ثبت شد.",
+      "serverTimestamp": "2026-11-06T21:16:41.400Z",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "aud_1793999797196_ajwka",
+      "actorId": "usr_emp_ali",
+      "actorName": "علی طاهری",
+      "action": "ثبت خروج پرسنل",
+      "category": "attendance",
+      "affectedRecordId": "att_sess_1",
+      "details": "خروج ثبت شد. کارکرد خام: 0 دقیقه. تعجیل: 1003 دقیقه. (دارای 1 وظیفه اجباری ناتمام)",
+      "serverTimestamp": "2026-11-06T21:16:37.196Z",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "aud_1793999788104_ddejt",
+      "actorId": "usr_mgr_biochem",
+      "actorName": "سارا رحیمی",
+      "action": "بررسی مرخصی: approved",
+      "category": "leave",
+      "affectedRecordId": "leave_1793999784129",
+      "details": "تصمیم: approved",
+      "serverTimestamp": "2026-11-06T21:16:28.104Z",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "aud_1793999784129_z4bml",
+      "actorId": "usr_emp_ali",
+      "actorName": "علی طاهری",
+      "action": "ثبت درخواست مرخصی",
+      "category": "leave",
+      "affectedRecordId": "leave_1793999784129",
+      "details": "امور درمانی و پزشکی",
+      "serverTimestamp": "2026-11-06T21:16:24.129Z",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "aud_1",
+      "actorId": "usr_superadmin",
+      "actorName": "دکتر رضا حسینی",
+      "action": "راه‌اندازی سامانه و تنظیم سیاست‌های اولیه حضور و غیاب",
+      "category": "policy",
+      "details": "تنظیم مختصات آزمایشگاه ترنج و شیفت‌های کاری",
+      "serverTimestamp": "2026-11-06T20:50:59.992Z"
+    }
+  ],
+  "settings": {
+    "centerName": "آزمایشگاه پاتوبیولوژی و ژنتیک ترنج",
+    "logoUrl": "/assets/toranj_logo.svg",
+    "licenseNumber": "L-1402-98721",
+    "address": "تهران، خیابان ولیعصر، بالاتر از میرداماد، پلاک ۱۲",
+    "city": "تهران",
+    "province": "تهران",
+    "phoneMain": "۰۲۱-۸۸۷۷۶۶۵۵",
+    "phoneSecondary": "۰۲۱-۸۸۷۷۶۶۵۶",
+    "email": "info@toranjlab.ir",
+    "website": "https://toranjlab.ir",
+    "gpsLat": 35.7592,
+    "gpsLng": 51.4116,
+    "allowedRadiusMeters": 100,
+    "timeZone": "Asia/Tehran",
+    "workingDays": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "defaultWorkStart": "07:30",
+    "defaultWorkEnd": "15:30",
+    "defaultLatenessToleranceMinutes": 15,
+    "defaultOvertimeAutoApprove": false,
+    "updatedAt": "2026-11-09T22:26:44.315Z",
+    "orgName": "آزمایشگاه پاتوبیولوژی و ژنتیک ترنج",
+    "orgTimezone": "Asia/Tehran",
+    "defaultLat": 35.7592,
+    "defaultLng": 51.4116,
+    "defaultRadiusMeters": 100,
+    "contactPhone": "۰۲۱-۸۸۷۷۶۶۵۵",
+    "contactAddress": "تهران، خیابان ولیعصر، بالاتر از میرداماد، پلاک ۱۲"
+  },
+  "holidays": [
+    {
+      "id": "hol_1",
+      "dateString": "2026-11-06",
+      "title": "تعطیل رسمی تقویم کشور",
+      "isOfficial": true,
+      "appliesToAll": true,
+      "notes": "تعطیل عمومی تقویم رسمی",
+      "createdBy": "usr_superadmin",
+      "createdAt": "2026-11-01T00:00:00Z"
+    },
+    {
+      "id": "hol_2",
+      "dateString": "2026-11-12",
+      "title": "تعطیلی ویژه کالیبراسیون و اورهال دستگاه‌های آزمایشگاه ترنج",
+      "isOfficial": false,
+      "appliesToAll": true,
+      "notes": "سرویس سالانه دستگاه‌های سل کانتر و بیوشیمی",
+      "createdBy": "usr_superadmin",
+      "createdAt": "2026-11-01T00:00:00Z"
+    }
+  ],
+  "centerSettings": {
+    "centerName": "آزمایشگاه پاتوبیولوژی و ژنتیک ترنج",
+    "logoUrl": "/assets/toranj_logo.svg",
+    "licenseNumber": "L-1402-98721",
+    "address": "تهران، خیابان ولیعصر، بالاتر از میرداماد، پلاک ۱۲",
+    "city": "تهران",
+    "province": "تهران",
+    "phoneMain": "۰۲۱-۸۸۷۷۶۶۵۵",
+    "phoneSecondary": "۰۲۱-۸۸۷۷۶۶۵۶",
+    "email": "info@toranjlab.ir",
+    "website": "https://toranjlab.ir",
+    "gpsLat": 35.7592,
+    "gpsLng": 51.4116,
+    "allowedRadiusMeters": 100,
+    "timeZone": "Asia/Tehran",
+    "workingDays": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "defaultWorkStart": "07:30",
+    "defaultWorkEnd": "15:30",
+    "defaultLatenessToleranceMinutes": 15,
+    "defaultOvertimeAutoApprove": false,
+    "updatedAt": "2026-11-09T22:26:44.315Z"
+  },
+  "nextEmployeeCodeSeq": 8,
+  "activeSessions": [
+    {
+      "token": "toranj_sec_3ac936eaad488462c64405a5844d8f4742ab144631c0b2c24f4fb9d96164a7c4",
+      "userId": "usr_superadmin",
+      "createdAt": "2026-11-09T22:27:01.597Z",
+      "expiresAt": "2026-11-16T22:27:01.597Z",
+      "ip": "127.0.0.1",
+      "userAgent": "curl/7.88.1"
+    }
+  ],
+  "passwordResetTokens": [],
+  "schemaVersion": 4
+}

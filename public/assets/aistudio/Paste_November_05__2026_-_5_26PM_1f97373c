@@ -1,0 +1,868 @@
+# Build a Production-Oriented Web-Based Employee Attendance and Task Management System
+
+Act as a senior full-stack software architect, security engineer, UI/UX designer, and product developer.
+
+Build a functional, responsive, Persian-first employee attendance, workforce scheduling, and task management web application for Toranj Laboratory.
+
+This must be a working application with real authentication, persistent database storage, server-side business logic, authorization, and functional user interfaces. Do not create only a visual prototype or static dashboard.
+
+## 1. Product objectives
+
+The application must:
+- Record employee check-in and check-out.
+- Verify attendance location using browser GPS according to per-employee policies.
+- Allow administrators to assign individual work schedules.
+- Calculate attendance, lateness, early departure, actual working time, approved overtime, absences, leave, and missions.
+- Manage tasks assigned between employees and managers.
+- Provide a focused management approval inbox.
+- Provide accurate attendance reports and monthly payroll-oriented summaries.
+- Support mobile phones, tablets, and desktop browsers.
+- Be deployable as a secure web application and eventually accessible through app.nexahealth.ir.
+
+Do not integrate laboratory specimen tracking, patient records, test orders, test results, or sample collection workflows. This application is exclusively for EMPLOYEE attendance and workforce management.
+
+## 2. Technology architecture
+
+Use a practical, maintainable full-stack architecture.
+
+Preferred approach:
+- React + TypeScript frontend.
+- Node.js server-side backend, using the supported full-stack runtime.
+- Firebase Authentication for identity, if compatible with the selected deployment architecture.
+- Cloud Firestore or an appropriate supported persistent database.
+- Server-side authorization and validation.
+- Server-generated timestamps.
+- Firebase Admin SDK or equivalent privileged server-side database access, never exposed to the browser.
+- Use supported, compatible dependencies and deployment methods.
+
+Before implementing, inspect the available project environment and select an architecture that can actually run and deploy.
+
+Do not mix incompatible hosting architectures or assume that a frontend-only deployment can securely enforce attendance policies.
+
+Keep secrets and service credentials exclusively on the server.
+
+Never use hardcoded administrator passwords, exposed API keys, or public unrestricted database access.
+
+If a required cloud service needs manual configuration, explain precisely what is missing and continue building the parts that can be completed.
+
+## 3. User roles and authorization
+
+Implement role-based access control.
+
+Roles:
+
+1. Super Admin:
+   - Full management authority.
+   - Manage employees, administrators, schedules, GPS policies, settings, permissions, reports, and audit records.
+   - Assign approval responsibilities.
+   - View the complete attendance dashboard.
+
+2. Manager:
+   - Access only authorized employees and assigned management scopes.
+   - Review and approve requests according to assigned permissions.
+   - Approve tasks for employees for whom they are designated approvers.
+   - Assign tasks when authorized.
+   - Review attendance and reports within their permissions.
+   - Never automatically receive access to payroll banking information.
+
+3. Employee:
+   - View and update permitted personal information.
+   - Check in and check out.
+   - View personal attendance history and schedules.
+   - Request leave, mission, and attendance corrections.
+   - Create and receive authorized tasks.
+   - Report task completion and view approval status.
+   - Never edit official attendance timestamps or approve their own requests.
+
+Support multiple managers, scoped permissions, and a designated attendance/task approver for each employee.
+
+Enforce permissions server-side on every sensitive operation.
+
+Do not rely on hiding frontend controls.
+
+## 4. Authentication and employee onboarding
+
+Implement:
+- Secure login.
+- Authenticated sessions.
+- Password reset.
+- Administrator-controlled employee account creation and deactivation.
+- Employee-to-account mapping.
+- Role assignment.
+- Secure initial password setup or another supported secure onboarding process.
+- Session expiration and logout.
+- Protection against unauthorized account creation.
+
+Employees must not be able to create privileged accounts or change their roles.
+
+Support shared-device use with individual employee accounts. Never identify an employee based only on a selected name or a shared PIN.
+
+If shared-device operation is supported, require individual authentication and a clear logout/identity-switch process.
+
+## 5. Visual design and interface
+
+Use the previously approved visual direction.
+
+Brand appearance:
+- Deep teal/navy: #102D3A
+- Muted gold: #D9C28D
+- White and subtle neutral backgrounds.
+- Minimal, professional medical-business aesthetic.
+- Clean cards, balanced spacing, readable typography.
+- Avoid excessive decorative charts, gradients, and unnecessary animation.
+
+Language:
+- Entirely Persian.
+- Full RTL layout.
+- All buttons, labels, notifications, errors, tables, forms, and menus in Persian.
+- Persian digits for display where appropriate.
+- Persian calendar (Jalali) in the user interface.
+- Use a reliable, tested Jalali date conversion library.
+- Use Asia/Tehran as the default business timezone.
+- Display the current Jalali date and current time at the top of primary pages.
+- Clearly distinguish scheduled times, actual event times, and approval timestamps.
+
+Store canonical timestamps in UTC and convert them for display and reporting.
+
+Never manually approximate Jalali dates.
+
+Responsive layout:
+- Desktop: persistent sidebar navigation.
+- Mobile: compact navigation or bottom navigation.
+- Mobile-first attendance screen with prominent check-in/check-out actions.
+- Support Persian typography and correct bidirectional text.
+- Use accessible controls, sufficient contrast, and visible loading/error states.
+
+## 6. Employee home screen
+
+Display:
+- Current Jalali date and time.
+- Employee name.
+- Assigned shift and scheduled working hours.
+- Current attendance status.
+- Today's check-in and check-out history.
+- Attendance location verification status.
+- Tasks due today.
+- Mandatory pending tasks.
+- Leave or mission status.
+- Recent notifications.
+
+Provide:
+- Check-in button.
+- Check-out button.
+- Attendance history.
+- Task inbox.
+- Leave/mission requests.
+- Profile.
+- Attendance correction request.
+
+Prevent duplicate check-in and invalid state transitions.
+
+Do not allow employees to directly modify attendance records.
+
+## 7. Attendance management
+
+Each attendance event must include:
+- Employee ID.
+- Event type: check-in or check-out.
+- Server-generated timestamp.
+- Assigned schedule reference.
+- Location verification result.
+- GPS coordinates when successfully obtained and policy permits collection.
+- Reported location accuracy in meters.
+- Applicable GPS policy version.
+- Device/browser metadata limited to what is necessary.
+- Event source: personal device or shared laboratory device.
+- Exception or override reference, if applicable.
+
+Use server time as the authoritative attendance time.
+
+Never accept the employee's device clock as the official timestamp.
+
+Use an atomic server-side transaction or equivalent protection against duplicate attendance events and race conditions.
+
+Attendance state rules:
+- A valid check-in opens an attendance session.
+- A valid check-out closes the open session.
+- A check-out cannot exist without a valid open attendance session, except through an explicitly authorized correction workflow.
+- Prevent overlapping sessions.
+- Prevent duplicate check-in.
+- Do not silently overwrite previous events.
+- Support correction requests without destroying original records.
+
+If a user taps a button repeatedly, process only a valid event.
+
+Display confirmation before submission when appropriate.
+
+## 8. GPS location verification and per-employee policies
+
+Managers must be able to configure GPS rules individually for every employee.
+
+Allow configuration of:
+- GPS required or optional.
+- Authorized laboratory location.
+- Latitude and longitude.
+- Allowed radius in meters.
+- Separate policies for check-in and check-out if needed.
+- Behavior for location outside the allowed area.
+- Behavior for poor location accuracy.
+- Behavior when location services are disabled.
+- Exception request availability.
+- Policy effective date.
+- Authorized manager responsible for exceptions.
+
+Allow different employees to have different policies.
+
+Provide a map-based configuration interface when a suitable mapping provider is configured. If no mapping API is available, support manual coordinates and provide a simple alternative location configuration workflow.
+
+Default configuration:
+- GPS required.
+- 100-meter radius.
+- Configurable per employee.
+- Location outside the allowed area triggers a restriction or exception workflow according to policy.
+- Poor GPS accuracy triggers a warning or exception workflow.
+
+These defaults must be editable.
+
+GPS requirements:
+- Request browser location permission at the moment it is needed.
+- Use HTTPS.
+- Show the user why location is required.
+- Handle permission denial, timeout, unavailable GPS, and inaccurate location.
+- Calculate distance between reported coordinates and authorized coordinates on the server.
+- Validate coordinate ranges and accuracy values.
+- Never treat browser-reported GPS as cryptographically verified proof of physical presence.
+- Flag suspicious or inconsistent location patterns where feasible.
+- Do not claim that GPS spoofing can be completely prevented.
+- Minimize storage of precise location information and restrict access.
+- Keep location retention configurable and documented.
+
+For employees who are not allowed to check in/out outside the authorized area:
+- Provide a clear Persian error message.
+- Provide a request-exception option where permitted.
+- Preserve an auditable decision trail.
+
+For GPS-optional employees:
+- Permit the event under policy.
+- Record that location was not verified.
+- Do not falsely mark the location as verified.
+
+Provide a secure, server-validated exception workflow.
+
+Do not automatically trust a location supplied by the client.
+
+## 9. Work schedules and shifts
+
+The laboratory operates daily from 08:00 to 20:00.
+
+There are two rotating shifts, but exact shift boundaries, rotation patterns, breaks, and individual schedules may vary.
+
+Do not permanently hardcode shift times.
+
+Administrators must be able to:
+- Create shifts.
+- Assign shifts to employees.
+- Create rotating schedules.
+- Assign daily schedules.
+- Configure start and end times for each employee.
+- Set effective dates.
+- Define working days and holidays.
+- Define paid and unpaid breaks.
+- Define permitted lateness.
+- Define early departure rules.
+- Define overtime eligibility and approval.
+- Define overnight shifts if necessary.
+- Modify future schedules without altering past approved attendance calculations.
+
+Provide:
+- Calendar view.
+- Weekly schedule.
+- Monthly schedule.
+- Employee schedule history.
+
+For the initial setup:
+- Create configurable shift templates.
+- Suggested initial templates: 08:00–14:00 and 14:00–20:00.
+- Treat these as editable suggestions, not confirmed permanent rules.
+- Do not automatically assign employees to these shifts without administrator action.
+
+Support employee-specific schedules and rotations.
+
+Maintain a versioned schedule history.
+
+## 10. Attendance calculations
+
+Implement transparent, auditable calculation rules.
+
+Calculate:
+- Scheduled working duration.
+- Actual attendance duration.
+- Approved break deductions.
+- Paid and unpaid time.
+- Lateness.
+- Early departure.
+- Missing check-in/out.
+- Absence.
+- Approved leave.
+- Mission.
+- Approved overtime.
+- Net working time.
+
+Distinguish:
+- Raw attendance duration.
+- Calculated working time.
+- Payroll-eligible time.
+- Manager-approved overtime.
+
+Do not count unapproved overtime as approved overtime.
+
+Make tolerance, rounding, break treatment, and overtime rules configurable.
+
+Provide a detailed calculation breakdown for every employee/day.
+
+Handle:
+- Missing events.
+- Incomplete sessions.
+- Corrections.
+- Holidays.
+- Leave.
+- Mission.
+- Shift changes.
+- Cross-midnight sessions.
+
+Do not silently infer missing attendance events.
+
+For missing check-out:
+- Flag the session as incomplete.
+- Notify the employee.
+- Allow correction request.
+- Require authorized review for official corrections.
+
+Payroll summaries are administrative estimates until approved.
+
+Do not claim legal payroll compliance without separately verified local rules.
+
+## 11. Employee profiles
+
+Create an employee profile with:
+
+Required fields:
+- First name.
+- Last name.
+- Mobile phone.
+- Exact date of birth.
+- Employee status.
+- Employee identifier.
+- Assigned schedule.
+- Designated manager/approver.
+
+Additional fields:
+- Landline phone.
+- Salary bank account number.
+- IBAN/Sheba.
+- Emergency contact name.
+- Emergency contact relationship.
+- Emergency contact phone.
+
+Provide secure editing workflows.
+
+Data visibility:
+- Employees may view and edit permitted personal fields.
+- Employees cannot edit roles, official attendance records, approval assignments, or payroll calculations.
+- Banking details are accessible only to explicitly authorized financial administrators.
+- Emergency contacts and exact date of birth are restricted to authorized personnel.
+- Other employees must not see private employee information.
+
+Use field-level authorization where possible.
+
+Mask bank information in normal displays.
+
+Do not include private information in application logs, notifications, URLs, or exports unless specifically authorized.
+
+Create a data retention and deletion policy appropriate for the deployment environment.
+
+Do not collect unnecessary personal information.
+
+Use fictional test data during development.
+
+## 12. Task management and task inbox
+
+Tasks can be created by authorized employees and managers for other employees.
+
+A task contains:
+- Title.
+- Description.
+- Creator.
+- Assignee.
+- Creation timestamp.
+- Due date and optional due time.
+- Priority.
+- Mandatory or optional classification.
+- Designated approving manager.
+- Current status.
+- Completion declaration timestamp.
+- Approval/rejection timestamp.
+- Comments and history.
+
+Task statuses:
+- New.
+- In progress.
+- Completion reported.
+- Awaiting approval.
+- Approved.
+- Rejected.
+- Overdue.
+- Cancelled.
+
+Workflow:
+1. Authorized user creates a task.
+2. The task is assigned to an employee.
+3. Employee updates progress.
+4. Employee reports completion.
+5. The designated approver reviews completion.
+6. Approver accepts or rejects with an optional reason.
+7. Every decision is recorded in task history.
+
+Allow tasks to be assigned to:
+- One employee.
+- Multiple employees, with independent completion and approval per assignee.
+
+Mandatory tasks:
+- Must be visibly marked.
+- Can have a due date.
+- Generate reminders and overdue notifications.
+- Require completion reporting and designated-manager approval when applicable.
+
+Optional tasks:
+- Must not block employee check-out.
+- Remain visible until resolved or cancelled.
+
+IMPORTANT:
+No task, mandatory or optional, may prevent, block, disable, or indefinitely delay employee check-out.
+
+A mandatory task that has not been completed or approved:
+- Must remain pending.
+- Must be flagged in the management dashboard.
+- Must be visible in the task inbox.
+- May trigger an appropriate reminder.
+- Must never prevent check-out.
+
+Task approval and attendance recording are independent systems.
+
+The check-out endpoint must not require all tasks to be completed or approved.
+
+Task creation permissions must be configurable to prevent abuse.
+
+Allow managers to define which employees may create tasks and for whom.
+
+Prevent unauthorized users from changing another employee's task approval status.
+
+Allow rejection, reassignment, cancellation, and deadline changes with a full audit trail.
+
+## 13. Management dashboard
+
+Create a real-time or near-real-time management dashboard.
+
+Display:
+- Total active employees.
+- Present employees.
+- Absent employees.
+- Employees on leave.
+- Employees on mission.
+- Employees not yet checked in.
+- Employees currently on an attendance session.
+- Employees with incomplete attendance records.
+- Employees with pending mandatory tasks.
+- Employees with overdue tasks.
+- Employees requiring management attention.
+
+Provide an employee status list:
+- Employee name.
+- Assigned schedule.
+- Attendance status.
+- Check-in time.
+- Check-out time, if recorded.
+- Location verification status.
+- Pending approvals.
+- Important alerts.
+
+Define presence carefully:
+- Checked in with an open session = currently checked in.
+- Not checked in during scheduled hours = not yet checked in.
+- No attendance event alone must not automatically mean unauthorized absence.
+- Absence status should follow configurable attendance rules and approved leave/mission records.
+
+Display status categories separately.
+
+Allow filtering by date, shift, employee, and status.
+
+Do not expose unnecessary private information on the dashboard.
+
+## 14. Management approval inbox
+
+Create a focused approval inbox.
+
+Only actions requiring a management decision should appear in the main approval inbox.
+
+Examples:
+- Leave requests.
+- Mission requests.
+- Attendance correction requests.
+- Overtime approvals.
+- Task completion approvals.
+- GPS exception requests.
+- Other explicitly configured approval actions.
+
+Routine notifications must appear in a separate notifications area.
+
+Each approval item must show:
+- Employee.
+- Request type.
+- Submission time.
+- Relevant details.
+- Assigned approver.
+- Priority.
+- Current status.
+- Available authorized actions.
+
+Allow approve/reject with a recorded decision timestamp.
+
+For rejection, provide a reason field where appropriate.
+
+Prevent duplicate or conflicting approval decisions using server-side validation.
+
+If the designated manager is unavailable, authorized fallback approvers must be supported.
+
+Managers must not approve their own sensitive requests.
+
+## 15. Leave, missions, and attendance corrections
+
+Implement:
+- Leave request creation.
+- Leave types configurable by administrators.
+- Start/end date.
+- Optional partial-day leave.
+- Reason.
+- Supporting attachment support only if securely implemented and necessary.
+- Mission request.
+- Mission destination and time period where appropriate.
+- Attendance correction requests.
+- Missing check-in/out requests.
+- Manager decisions.
+- Employee notifications.
+
+Approved leave and missions must be reflected in schedules and reports.
+
+Never fabricate attendance events for leave or mission.
+
+For mission-related attendance, support configurable location policies and approved exception rules.
+
+Maintain original attendance events and correction records separately.
+
+## 16. Notifications
+
+Implement an in-app notification center.
+
+Notifications:
+- Upcoming task deadline.
+- Overdue mandatory task.
+- Task assigned.
+- Task completion approval or rejection.
+- Leave/mission decision.
+- Attendance correction decision.
+- Missing check-out reminder.
+- Relevant schedule changes.
+- Management approval pending.
+
+Do not depend on email/SMS services unless properly configured.
+
+Provide optional future integration points for push notifications.
+
+Prevent sensitive payroll or personal information from appearing in notification previews.
+
+## 17. Reports and exports
+
+Implement:
+- Daily attendance report.
+- Monthly attendance report.
+- Employee attendance history.
+- Lateness report.
+- Absence report.
+- Overtime report.
+- Leave and mission report.
+- Task completion report.
+- Pending mandatory tasks report.
+- Payroll-oriented work-hours summary.
+
+Include:
+- Date filters.
+- Employee filters.
+- Shift filters.
+- Status filters.
+- Detailed calculation breakdown.
+- Export to CSV and Excel-compatible format.
+- Persian date formatting in exported reports.
+- Consistent numeric formats.
+
+Restrict exports by role.
+
+Record who exported sensitive reports and when.
+
+Do not include banking details in attendance reports.
+
+## 18. Audit logs and data integrity
+
+Create an append-only audit trail for sensitive operations.
+
+Audit events include:
+- Authentication-related administrative changes.
+- Employee creation/deactivation.
+- Role and permission changes.
+- Schedule changes.
+- GPS policy changes.
+- Attendance corrections.
+- Approval/rejection decisions.
+- Task reassignment.
+- Overtime approvals.
+- Sensitive profile updates.
+- Data exports.
+
+Each audit entry should contain:
+- Actor.
+- Action.
+- Affected record.
+- Server timestamp.
+- Relevant metadata.
+- Reason when required.
+
+Prevent ordinary users from editing or deleting audit entries.
+
+Use database rules and server-side authorization to protect historical records.
+
+Do not claim absolute immutability if the infrastructure does not technically guarantee it.
+
+## 19. Data model
+
+Design a clear relational or document data model.
+
+At minimum support:
+- Users.
+- Employees.
+- Roles and permissions.
+- Approval assignments.
+- Schedules.
+- Shift templates.
+- Attendance events.
+- Attendance sessions or derived sessions.
+- Attendance correction requests.
+- GPS policies.
+- Leave requests.
+- Mission requests.
+- Tasks.
+- Task assignments.
+- Task approvals.
+- Notifications.
+- Audit logs.
+- Application settings.
+- Holidays and calendar configuration.
+
+Use stable unique IDs and explicit relationships.
+
+Add database indexes for common report queries.
+
+Prevent duplicate attendance records through transactional server-side logic.
+
+Do not store important business logic only in frontend state.
+
+## 20. Security and privacy requirements
+
+Apply:
+- Least-privilege access.
+- Server-side authorization.
+- Secure session management.
+- Input validation.
+- Rate limiting for sensitive endpoints.
+- Protection against unauthorized data access.
+- Secure secrets management.
+- Safe error handling.
+- No sensitive values in client logs.
+- Appropriate database rules.
+- Secure deployment configuration.
+- Backups and recovery considerations.
+
+Do not expose unrestricted Firestore access.
+
+If Firebase is used:
+- Configure Firebase Authentication.
+- Configure secure Firestore Security Rules.
+- Deny unauthorized direct writes to official attendance records.
+- Validate privileged actions in trusted server code.
+- Never ship service account credentials to the browser.
+
+GPS and attendance data are sensitive personal data.
+
+Minimize location collection and retention.
+
+Use explicit user permission and explain the purpose of location access.
+
+Do not collect background location.
+
+## 21. Operational settings
+
+Provide an administrator settings interface for:
+- Organization name.
+- Organization timezone.
+- Laboratory location.
+- Employee schedules.
+- GPS policy defaults.
+- Individual GPS policies.
+- Allowed attendance windows.
+- Lateness tolerance.
+- Overtime rules.
+- Break rules.
+- Holiday calendar.
+- Task priorities.
+- Task permissions.
+- Approval routing.
+- Notification preferences.
+- Retention settings.
+- Reporting preferences.
+
+Support future expansion without requiring a rewrite.
+
+Do not overengineer multi-branch features in the first version.
+
+## 22. Deployment target
+
+The intended final application URL is:
+
+https://app.nexahealth.ir
+
+This is the target domain, not an assumption that DNS or hosting is already configured.
+
+Design the application to support a custom domain and HTTPS.
+
+First build and test the application in its supported development environment.
+
+Then provide a deployment guide explaining:
+- Required Google Cloud or Firebase configuration.
+- Authentication configuration.
+- Database creation.
+- Environment variables.
+- Server-side secrets.
+- Deployment steps.
+- Custom domain connection.
+- HTTPS configuration.
+- DNS records that must be configured.
+- Authentication authorized domains.
+- Backup and recovery.
+- Cost considerations.
+- Production security checklist.
+
+Do not modify external DNS automatically.
+
+Do not assume access to the user's hosting account or domain registrar.
+
+Do not promise free permanent production hosting.
+
+Explain which services are free, which have quotas, and which may incur charges.
+
+## 23. Testing and acceptance criteria
+
+Create meaningful tests for:
+
+1. Employee authentication.
+2. Role-based access.
+3. Check-in with valid GPS.
+4. GPS rejection or exception flow.
+5. GPS-optional attendance.
+6. Duplicate check-in prevention.
+7. Check-out.
+8. Check-out while mandatory tasks remain pending.
+9. Schedule assignment.
+10. Lateness calculation.
+11. Early departure calculation.
+12. Approved overtime calculation.
+13. Missing attendance events.
+14. Leave and mission approval.
+15. Attendance correction.
+16. Task assignment.
+17. Task completion approval.
+18. Manager fallback approval.
+19. Unauthorized access prevention.
+20. Monthly report calculations.
+21. Jalali date conversion and timezone boundaries.
+22. Cross-midnight attendance.
+23. Audit trail integrity.
+
+The following acceptance conditions are mandatory:
+
+- An employee can check out even when mandatory tasks remain pending.
+- A task approver cannot modify attendance timestamps.
+- An employee cannot approve their own task completion.
+- A manager cannot access unauthorized employees.
+- GPS policy can be configured per employee.
+- Schedules can be configured individually.
+- Attendance timestamps come from the server.
+- Original attendance events remain traceable after correction.
+- The management dashboard distinguishes not-yet-checked-in employees from confirmed absences.
+- Sensitive payroll information is not visible to ordinary employees.
+- The application works on mobile and desktop.
+- The UI is Persian and RTL.
+- Attendance reports provide traceable calculations.
+
+## 24. Implementation workflow
+
+Work in this order:
+
+Phase 1:
+- Inspect the project environment.
+- Choose the compatible full-stack architecture.
+- Create the application structure.
+- Implement the responsive Persian RTL UI.
+- Create the core data model.
+
+Phase 2:
+- Authentication.
+- Roles and permissions.
+- Employee management.
+- Schedule management.
+- GPS configuration.
+
+Phase 3:
+- Attendance recording.
+- Server timestamps.
+- Attendance state machine.
+- Calculations.
+- Correction requests.
+
+Phase 4:
+- Task management.
+- Task inbox.
+- Approval workflows.
+- Leave and mission requests.
+
+Phase 5:
+- Management dashboard.
+- Reports.
+- Exports.
+- Notifications.
+- Audit trail.
+
+Phase 6:
+- Security review.
+- Tests.
+- Bug fixing.
+- Deployment preparation.
+
+Do not stop after generating a dashboard or login screen.
+
+Implement the highest-value working features first.
+
+If full implementation cannot fit in one pass, clearly state what is functional, what is incomplete, and what must be done next.
+
+Do not fabricate successful tests, deployment results, database connections, or authentication.
+
+Provide clear setup instructions and a concise list of any manual configuration steps.
+
+Start building the application now.
